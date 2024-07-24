@@ -12,7 +12,7 @@ import animationData from '../animations/typing.json';
 
 import io from "socket.io-client";
 import Lottie from 'react-lottie';
-const ENDPOINT = "http://localhost:3000";
+const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {

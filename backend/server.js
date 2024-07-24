@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const { chats } = require("./data/data");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -24,7 +23,7 @@ app.use('/api/message', messageRoutes);
 
 const __dirname1 = path.resolve();
 if (process.env.NODE_ENV === 'prod') {
-    app.use(express.static(path.join(__dirname1, "/frontend/butid")));
+    app.use(express.static(path.join(__dirname1, "/frontend/build")));
 
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
@@ -40,9 +39,9 @@ if (process.env.NODE_ENV === 'prod') {
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT;
 
-const server = app.listen(PORT,() => console.log(`Server Started on PORT ${PORT}`));
+const server = app.listen(PORT, console.log(`Server Started on PORT ${PORT}`));
 
 const io = require("socket.io")(server, {
     pingTimeout: 60000,
