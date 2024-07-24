@@ -12,7 +12,7 @@ import animationData from '../animations/typing.json';
 
 import io from "socket.io-client";
 import Lottie from 'react-lottie';
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "http://localhost:3000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -33,7 +33,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     };
 
     const toast = useToast();
-    const { user, selectedChat, setSelectedChat } = ChatState();
+    const { user, selectedChat, setSelectedChat, notification, setNotification } = ChatState();
 
     const fetchMessages = async () => {
         if (!selectedChat) return;
@@ -49,7 +49,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
             const { data } = await axios.get(`/api/message/${selectedChat._id}`, config);
 
-            console.log(messages);
             setMessages(data);
             setLoading(false);
 
@@ -65,8 +64,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 });
         }
     };
-
-    console.log(messages);
 
     useEffect(() => {
         socket = io(ENDPOINT);
@@ -85,7 +82,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     useEffect(() => {
         socket.on("message received", (newMessageReceived) => {
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-                // give notificaion
+                if (!notification.includes(newMessageReceived)) {
+                    setNotification([newMessageReceived, ...notification]);
+                    setFetchAgain(!fetchAgain);
+                }
             } else {
                 setMessages([...messages, newMessageReceived]);
             }
@@ -112,8 +112,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     },
                     config
                 );
-
-                console.log(data);
          
                 socket.emit("new message", data);
                 setMessages([...messages, data]);
@@ -212,7 +210,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             <Lottie
                                 options={defaultOptions}
                                 width={54}
-                                style={{ marginBottom: -8, marginLeft: 30, marginTop: -15}}
+                                style={{ marginBottom: -8, marginLeft: 30, marginTop: -10}}
                             />
                         </div> : <></>}
                         <Input
