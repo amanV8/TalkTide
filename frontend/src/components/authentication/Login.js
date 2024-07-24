@@ -5,6 +5,7 @@ import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { Button, Text, useToast } from "@chakra-ui/react";
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { ChatState } from "../../Context/ChatProvider";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +15,7 @@ const Login = () => {
 
   const toast = useToast();
   const history = useHistory();
+  const { setUser } = ChatState();
   const handlePasswordClick = () => setShowPassword(!showPassword);
 
   const submitHandler = async () => {
@@ -47,9 +49,8 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-
+      setUser(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
-
       setLoading(false);
       history.push('/chats');
     } catch (error) {
@@ -71,6 +72,7 @@ const Login = () => {
         <FormLabel>Email</FormLabel>
         <Input
           value={email}
+          type={email}
           placeholder='Enter Your Email'
           onChange={(e) => setEmail(e.target.value)}
         />
