@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { ChatState } from '../Context/ChatProvider';
 import { Box, FormControl, IconButton, Input, Spinner, Text, useToast } from '@chakra-ui/react';
 import { ArrowBackIcon } from "@chakra-ui/icons";
@@ -35,7 +35,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const toast = useToast();
     const { user, selectedChat, setSelectedChat, notification, setNotification } = ChatState();
 
-    const fetchMessages = async () => {
+    const fetchMessages = useCallback(async () => {
         if (!selectedChat) return;
 
         try {
@@ -63,7 +63,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                    position: "bottom",
                 });
         }
-    };
+    }, [selectedChat, user.token, toast]);
 
     useEffect(() => {
         socket = io(ENDPOINT);
@@ -71,13 +71,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.on("connected", () => setSocketConnected(true));
         socket.on("typing", () => setIsTyping(true));
         socket.on("stop typing", () => setIsTyping(false));
-    }, []);
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [user]);
 
     useEffect(() => {
         fetchMessages();
 
         selectedChatCompare = selectedChat;
-    }, [selectedChat]);
+    }, [selectedChat, fetchMessages]);
 
     useEffect(() => {
         socket.on("message received", (newMessageReceived) => {
@@ -87,7 +91,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     setFetchAgain(!fetchAgain);
                 }
             } else {
-                setMessages([...messages, newMessageReceived]);
+                setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
             }
         });
     })
