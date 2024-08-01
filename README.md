@@ -13,7 +13,7 @@ Uses Socket.io for real time communication and stores user details in encrypted 
   
 ## LIVE
 
-[https://talktide-ekli.onrender.com/]
+https://talktide-ekli.onrender.com/
 
 ## Run Locally
 
@@ -75,4 +75,4 @@ Start the Client
 ![](https://github.com/amanV8/TalkTide/blob/main/screenshots/profile.png)
 ## Made By
 
-- [@amanV8](https://github.com/amanV8/TalkTide)
+- [@amanV8](https://github.com/amanV8)
