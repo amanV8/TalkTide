@@ -13,7 +13,7 @@ Uses Socket.io for real time communication and stores user details in encrypted 
   
 ## LIVE
 
-https://talktide-ekli.onrender.com/
+https://talktide-1.onrender.com
 
 ## Run Locally
 
